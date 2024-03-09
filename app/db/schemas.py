@@ -3,7 +3,7 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from db.models import UserRole
+from app.db.models import UserRole
 
 
 class CommentBase(BaseModel):
@@ -19,7 +19,7 @@ class Comment(CommentBase):
     pub_date: datetime
     author_id: int
 
-    class Config:
+    class ConfigDict:
         from_attributes = True
 
 
@@ -35,7 +35,7 @@ class User(UserBase):
     is_active: bool
     # comments: list[Comment] = []
 
-    class Config:
+    class ConfigDict:
         from_atributes = True
 
 

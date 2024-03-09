@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import update
 
-from db import schemas
-from db.models import User
+from app.db import schemas
+from app.db.models import User
 
 
 def create_user(db: Session, user: schemas.UserCreate) -> User:
