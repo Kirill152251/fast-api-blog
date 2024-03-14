@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 from app.db.database import Base
 
 
-class UserRole(enum.Enum):
+class UserRole(str, enum.Enum):
     user = 'user'
     admin = 'admin'
     superuser = 'superuser'

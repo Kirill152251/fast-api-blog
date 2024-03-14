@@ -7,6 +7,7 @@ from sqlalchemy.pool import StaticPool
 from app.db.database import Base
 from app.db.models import User
 from app.main import app
+from app.db import schemas
 from app.dependencies import get_db
 
 
@@ -69,11 +70,9 @@ def user_saved_to_db(db, db_user_create_dict):
 
 @pytest.fixture
 def response_user_dict(user_saved_to_db):
-    user_dict = user_saved_to_db.__dict__
-    user_dict.pop('_sa_instance_state')
-    user_dict.pop('hashed_password')
-    user_dict['role'] = 'admin'
-    return user_dict
+    return schemas.User.model_validate(
+        user_saved_to_db, from_attributes=True
+    ).model_dump()
 
 @pytest.fixture
 def put_user_dict():

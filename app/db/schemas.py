@@ -29,6 +29,9 @@ class UserBase(BaseModel):
     last_name: str | None
     role: UserRole = UserRole.user
 
+    class ConfigDict:
+        use_enum_values = True
+
 
 class User(UserBase):
     id: int

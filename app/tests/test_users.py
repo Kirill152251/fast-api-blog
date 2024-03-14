@@ -52,7 +52,7 @@ def test_put_user(client, response_user_dict, put_user_dict):
     assert updated['first_name'] == put_user_dict['first_name']
     assert updated['last_name'] == put_user_dict['last_name']
 
-def test_non_exist_user(client, response_user_dict, put_user_dict):
+def test_put_non_exist_user(client, response_user_dict, put_user_dict):
     response = client.put(
         f'/users/{response_user_dict["id"]+1}',
         json=put_user_dict    
