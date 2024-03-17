@@ -6,23 +6,6 @@ from pydantic import BaseModel
 from app.db.models import UserRole
 
 
-class CommentBase(BaseModel):
-    text: str
-
-
-class CommentCreate(CommentBase):
-    pass
-
-
-class Comment(CommentBase):
-    id: int
-    pub_date: datetime
-    author_id: int
-
-    class ConfigDict:
-        from_attributes = True
-
-
 class UserBase(BaseModel):
     email: str
     first_name: str | None
@@ -54,3 +37,38 @@ class UserCreate(UserBase):
 
 class Message(BaseModel):
     message: str
+
+
+class GroupDTO(BaseModel):
+    title: str
+    slug: str
+    description: str
+
+
+class GroupGet(GroupDTO):
+    id: int
+
+
+class PostDTO(BaseModel):
+    text: str
+    author: str
+    group: int
+
+
+class PostGet(PostDTO):
+    id: str
+    pub_date: datetime
+
+
+class CommentDTO(BaseModel):
+    text: str
+
+
+class CommentGet(CommentDTO):
+    id: int
+    created_at: datetime
+    author: str
+    post: int
+
+    class ConfigDict:
+        from_attributes = True
