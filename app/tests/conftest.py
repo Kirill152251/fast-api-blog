@@ -4,10 +4,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
-from app.db.database import Base
-from app.db.models import User
+from app.db.models import User, Base
 from app.main import app
-from app.db import schemas
+from app.db import schemas, crud, models
 from app.dependencies import get_db
 
 
@@ -82,3 +81,74 @@ def put_user_dict():
         "last_name": "newermalenok",
     }
 
+@pytest.fixture
+def first_group_dto():
+    return schemas.GroupDTO(
+        title='test title',
+        slug='travel',
+        description='some description'
+    )
+
+@pytest.fixture
+def second_group_dto():
+    return schemas.GroupDTO(
+        title='test title two',
+        slug='travel2',
+        description='some description'    
+    )
+
+@pytest.fixture
+def create_group_in_db(db, first_group_dto):
+    return crud.create_group(db, first_group_dto)
+
+
+@pytest.fixture
+def create_several_groups_in_db(db, first_group_dto, second_group_dto):
+    groups = []
+    groups.append(crud.create_group(db, second_group_dto))
+    groups.append(crud.create_group(db, first_group_dto))
+    return sorted(groups, key=lambda group: group.id)
+
+@pytest.fixture
+def post_dto(
+    user_saved_to_db: models.User,
+    create_group_in_db: models.Group
+):
+    return schemas.PostDTO(
+        text='post text',
+        author_id=user_saved_to_db.id,
+        group_id=create_group_in_db.id
+    )
+
+@pytest.fixture
+def create_post_in_db(db, post_dto):
+    return crud.create_post(db, post_dto)
+
+@pytest.fixture
+def create_two_posts(
+    db,
+    user_saved_to_db: models.User,
+    create_group_in_db: models.Group
+):
+    posts = []
+    posts.append(
+        crud.create_post(
+            db,
+            schemas.PostDTO(
+                text='post text',
+                author_id=user_saved_to_db.id,
+                group_id=create_group_in_db.id
+            )
+        )
+    )
+    posts.append(
+        crud.create_post(
+            db,
+            schemas.PostDTO(
+                text='second post text',
+                author_id=user_saved_to_db.id,
+                group_id=create_group_in_db.id
+            )
+        )
+    )
+    return posts
