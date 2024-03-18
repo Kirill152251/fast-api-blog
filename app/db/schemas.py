@@ -51,12 +51,12 @@ class GroupGet(GroupDTO):
 
 class PostDTO(BaseModel):
     text: str
-    author: str
-    group: int
+    author_id: int
+    group_id: int
 
 
 class PostGet(PostDTO):
-    id: str
+    id: int
     pub_date: datetime
 
 

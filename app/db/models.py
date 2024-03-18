@@ -6,7 +6,7 @@ from typing import List
 from sqlalchemy import (
     Boolean, Column, 
     ForeignKey, Integer, 
-    String, Enum
+    String, Enum, TIMESTAMP
 )
 from sqlalchemy import text as sqltext
 from sqlalchemy.orm import relationship, mapped_column, Mapped, validates, declarative_base
@@ -41,10 +41,9 @@ class Group(Base):
 
     posts: Mapped[List['Post']] = relationship(back_populates='group')
 
-
     @validates('slug')
     def validate_slug(self, key, slug):
-        if not re.match(constants.SLUG_REGEX_PATT, slug):
+        if re.match(constants.SLUG_REGEX_PATT, slug) == None:
             raise ValueError(
                 'Slug field should match ' 
                 f'regex pattern {constants.SLUG_REGEX_PATT}'
@@ -77,7 +76,7 @@ class Comment(Base):
     text: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         nullable=False,
-        server_default=sqltext("DATE('now')")
+        server_default=sqltext('CURRENT_TIMESTAMP')
     )
     author_id: Mapped[int] = mapped_column(
         ForeignKey('users.id'),
@@ -97,7 +96,7 @@ class Post(Base):
     text: Mapped[str] = mapped_column(nullable=False)
     pub_date: Mapped[datetime] = mapped_column(
         nullable=False,
-        server_default=sqltext("DATE('now')")
+        server_default=sqltext('CURRENT_TIMESTAMP')
     )
     author_id: Mapped[int] = mapped_column(
         ForeignKey('users.id'),
