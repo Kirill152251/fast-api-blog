@@ -51,7 +51,7 @@ class Group(Base):
         return slug
     
     def __repr__(self):
-        return f'group: id={self.id}, slug={self.slug}'
+        return f'Group(id={self.id}, slug={self.slug})'
     
 
 class User(Base):
@@ -67,6 +67,9 @@ class User(Base):
 
     comments: Mapped[List['Comment']] = relationship(back_populates='author')
     posts: Mapped[List['Post']] = relationship(back_populates='author')
+
+    def __repr__(self):
+        return f'User(id={self.id}, email={self.email})'
 
 
 class Comment(Base):
@@ -86,7 +89,7 @@ class Comment(Base):
     author: Mapped['User'] = relationship(back_populates='comments')
 
     def __repr__(self):
-        return f'comment: id={self.id}, text={self.text[:10]}'
+        return f'Comment(id={self.id}, text={self.text[:10]})'
 
 
 class Post(Base):
@@ -111,4 +114,4 @@ class Post(Base):
     group: Mapped['Group'] = relationship(back_populates='posts')
 
     def __repr__(self):
-        return f'post: id={self.id}, text={self.text[:10]}'
+        return f'Post(id={self.id}, text={self.text[:10]})'

@@ -60,6 +60,11 @@ class PostGet(PostDTO):
     pub_date: datetime
 
 
+class PostUpdate(BaseModel):
+    text: Optional[str] = None
+    group: Optional[int] = None
+
+
 class CommentDTO(BaseModel):
     text: str
 

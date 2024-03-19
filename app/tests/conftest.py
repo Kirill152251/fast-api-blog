@@ -6,7 +6,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.db.models import User, Base
 from app.main import app
-from app.db import schemas, crud, models
+from app.db import crud_post, crud_group, schemas, models
 from app.dependencies import get_db
 
 
@@ -99,14 +99,14 @@ def second_group_dto():
 
 @pytest.fixture
 def create_group_in_db(db, first_group_dto):
-    return crud.create_group(db, first_group_dto)
+    return crud_group.create_group(db, first_group_dto)
 
 
 @pytest.fixture
 def create_several_groups_in_db(db, first_group_dto, second_group_dto):
     groups = []
-    groups.append(crud.create_group(db, second_group_dto))
-    groups.append(crud.create_group(db, first_group_dto))
+    groups.append(crud_group.create_group(db, second_group_dto))
+    groups.append(crud_group.create_group(db, first_group_dto))
     return sorted(groups, key=lambda group: group.id)
 
 @pytest.fixture
@@ -122,7 +122,7 @@ def post_dto(
 
 @pytest.fixture
 def create_post_in_db(db, post_dto):
-    return crud.create_post(db, post_dto)
+    return crud_post.create_post(db, post_dto)
 
 @pytest.fixture
 def create_two_posts(
@@ -132,7 +132,7 @@ def create_two_posts(
 ):
     posts = []
     posts.append(
-        crud.create_post(
+        crud_post.create_post(
             db,
             schemas.PostDTO(
                 text='post text',
@@ -142,7 +142,7 @@ def create_two_posts(
         )
     )
     posts.append(
-        crud.create_post(
+        crud_post.create_post(
             db,
             schemas.PostDTO(
                 text='second post text',

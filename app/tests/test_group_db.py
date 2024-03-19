@@ -4,7 +4,7 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
-from app.db import crud
+from app.db import crud_group as crud
 from app.db import schemas
 from app.db.models import Group
 
