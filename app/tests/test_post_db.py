@@ -17,6 +17,21 @@ def test_create_post(db, post_dto):
     assert post_dto.group_id == posts[0].group_id
     assert post_dto.text == posts[0].text
 
+invalid_post = pytest.mark.parametrize(
+    'post_dto',
+    [
+        'invalid_post_dto',
+        'invalid_author_id_post_dto',
+        'invalid_group_id_post_dto',
+    ],
+)
+@invalid_post
+def test_create_post_with_invalid_data(db, post_dto, request):
+    post_dto = request.getfixturevalue(post_dto)
+    post = crud.create_post(db, post_dto)
+    assert post == None
+    assert len(get_posts(db)) == 0
+
 def test_get_post(db, create_post_in_db):
     post = crud.get_post_by_id(db, create_post_in_db.id)
     assert post != None

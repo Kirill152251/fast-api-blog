@@ -120,6 +120,39 @@ def post_dto(
     )
 
 @pytest.fixture
+def invalid_author_id_post_dto(
+    user_saved_to_db: models.User,
+    create_group_in_db: models.Group
+):
+    return schemas.PostDTO(
+        text='post text',
+        author_id=user_saved_to_db.id+1,
+        group_id=create_group_in_db.id
+    )
+
+@pytest.fixture
+def invalid_group_id_post_dto(
+    user_saved_to_db: models.User,
+    create_group_in_db: models.Group
+):
+    return schemas.PostDTO(
+        text='post text',
+        author_id=user_saved_to_db.id,
+        group_id=create_group_in_db.id+1
+    )
+
+@pytest.fixture
+def invalid_post_dto(
+    user_saved_to_db: models.User,
+    create_group_in_db: models.Group
+):
+    return schemas.PostDTO(
+        text='post text',
+        author_id=user_saved_to_db.id+1,
+        group_id=create_group_in_db.id+1
+    )
+
+@pytest.fixture
 def create_post_in_db(db, post_dto):
     return crud_post.create_post(db, post_dto)
 
