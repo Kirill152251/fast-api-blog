@@ -34,8 +34,22 @@ def delete_post(db: Session, post_id) -> Post | None:
     post = db.scalar(
         delete(Post).where(Post.id == post_id).returning(Post)
     )
-    db.commit()
     return post
 
-def update_post(db: Session, ):
-    pass
+def update_post(
+    db: Session,
+    post_id: int,
+    new_post_data: schemas.PostUpdate
+) -> Post | None:
+    if new_post_data.group_id != None:
+        is_group_exist = db.get(Group, new_post_data.group_id)
+        if not is_group_exist:
+            return None
+    new_data_dict = new_post_data.model_dump(exclude_unset=True)
+    stmt = (
+        update(Post)
+        .where(Post.id==post_id)
+        .values(**new_data_dict)
+        .returning(Post)
+    )
+    return db.scalar(stmt)

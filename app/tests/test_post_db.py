@@ -44,6 +44,52 @@ def test_delete_non_existent_post(db, create_post_in_db: Post):
     assert post == None
     assert len(get_posts(db)) == 1
 
+def test_update_all_available_post_field(
+        db,
+        post_update_full,
+        create_post_in_db
+):
+    assert create_post_in_db.text != post_update_full.text
+    assert create_post_in_db.group_id != post_update_full.group_id
+    updated_post = crud.update_post(db, create_post_in_db.id, post_update_full)
+    assert updated_post != None
+    assert updated_post.group_id == post_update_full.group_id
+    assert updated_post.text == post_update_full.text
+
+def test_update_post_text(db, create_post_in_db, post_update_text):
+    assert create_post_in_db.text != post_update_text
+    updated_post = crud.update_post(db, create_post_in_db.id, post_update_text)
+    assert updated_post != None
+    assert updated_post.text == post_update_text.text
+
+def test_update_group_id_of_post(
+    db,
+    create_post_in_db,
+    post_update_group_id
+):
+    assert create_post_in_db.group_id != post_update_group_id.group_id
+    updated_post = crud.update_post(db, create_post_in_db.id, post_update_group_id)
+    assert updated_post != None
+    assert updated_post.group_id == post_update_group_id.group_id
+
+def test_update_post_with_non_exist_group(
+    db,
+    create_post_in_db,
+):  
+    old_group_id = create_post_in_db.group_id
+    updated_post = crud.update_post(
+        db,
+        create_post_in_db.id,
+        schemas.PostUpdate(group_id=old_group_id+1)
+    )
+    assert updated_post == None
+
+
+def test_update_non_existent_post(db, create_post_in_db, post_update_text):
+    updated_post = crud.update_post(db, create_post_in_db.id+1, post_update_text)
+    assert updated_post == None
+    
+
 def get_posts(db):
     return db.scalars(select(Post)).all()
 

@@ -101,12 +101,11 @@ def second_group_dto():
 def create_group_in_db(db, first_group_dto):
     return crud_group.create_group(db, first_group_dto)
 
-
 @pytest.fixture
-def create_several_groups_in_db(db, first_group_dto, second_group_dto):
+def create_several_groups_in_db(db, create_group_in_db, second_group_dto):
     groups = []
+    groups.append(create_group_in_db)
     groups.append(crud_group.create_group(db, second_group_dto))
-    groups.append(crud_group.create_group(db, first_group_dto))
     return sorted(groups, key=lambda group: group.id)
 
 @pytest.fixture
@@ -152,3 +151,24 @@ def create_two_posts(
         )
     )
     return posts
+
+@pytest.fixture
+def post_update_full(
+    create_several_groups_in_db,
+):
+    return schemas.PostUpdate(
+        text='afaljfajf;ka',
+        group_id=create_several_groups_in_db[1].id
+    )
+
+@pytest.fixture
+def post_update_text():
+    return schemas.PostUpdate(
+        text='fakjgoiabja'
+    )
+
+@pytest.fixture
+def post_update_group_id(create_several_groups_in_db):
+    return schemas.PostUpdate(
+        group_id=create_several_groups_in_db[1].id
+    )

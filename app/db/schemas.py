@@ -62,7 +62,7 @@ class PostGet(PostDTO):
 
 class PostUpdate(BaseModel):
     text: Optional[str] = None
-    group: Optional[int] = None
+    group_id: Optional[int] = None
 
 
 class CommentDTO(BaseModel):
