@@ -82,11 +82,16 @@ class Comment(Base):
         server_default=sqltext('CURRENT_TIMESTAMP')
     )
     author_id: Mapped[int] = mapped_column(
-        ForeignKey('users.id'),
+        ForeignKey('users.id', name='comment_author'),
+        nullable=False,
+    )
+    post_id: Mapped[int] = mapped_column(
+        ForeignKey('posts.id', name='related_post'),
         nullable=False
     )
 
     author: Mapped['User'] = relationship(back_populates='comments')
+    post: Mapped['Post'] = relationship(back_populates='comments')
 
     def __repr__(self):
         return f'Comment(id={self.id}, text={self.text[:10]})'
@@ -112,6 +117,7 @@ class Post(Base):
 
     author: Mapped['User'] = relationship(back_populates='posts')
     group: Mapped['Group'] = relationship(back_populates='posts')
+    comments: Mapped['Comment'] = relationship(back_populates='post')
 
     def __repr__(self):
         return f'Post(id={self.id}, text={self.text[:10]})'

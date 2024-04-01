@@ -67,6 +67,11 @@ class PostUpdate(BaseModel):
 
 class CommentDTO(BaseModel):
     text: str
+    author_id: int
+
+
+class CommentUpdate(BaseModel):
+    text: str
 
 
 class CommentGet(CommentDTO):
