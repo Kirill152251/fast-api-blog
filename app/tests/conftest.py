@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.db.models import User, Base
-from app.main import app
+from main import app
 from app.db import crud_post, crud_group, schemas, models
 from app.dependencies import get_db
 

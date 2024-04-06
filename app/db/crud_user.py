@@ -3,11 +3,12 @@ from sqlalchemy import update, insert
 
 from app.db import schemas
 from app.db.models import User
+from app.dependencies import get_hashed_password
 
 
 def create_user(db: Session, user: schemas.UserCreate) -> User:
     user_dict = user.model_dump()
-    hashed_password = user_dict.pop('password') + 'fakehash'
+    hashed_password = get_hashed_password(user_dict.pop('password'))
     user_dict['hashed_password'] = hashed_password
     user = db.scalar(
         insert(User).returning(User),

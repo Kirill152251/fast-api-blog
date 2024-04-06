@@ -1,12 +1,19 @@
-from typing import Any
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.db import crud_user, schemas
 from app.dependencies import get_db
+from app.auth import get_current_user
 
 router = APIRouter(tags=['users'])
+
+@router.get('/user/me', response_model=schemas.User)
+async def read_users_me(
+    current_user: Annotated[schemas.User, Depends(get_current_user)]
+):
+    return current_user
 
 
 @router.post('/users/', response_model=schemas.User)
