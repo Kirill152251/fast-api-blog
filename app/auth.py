@@ -8,6 +8,7 @@ from jose import JWSError, jwt
 
 from app.db.crud_user import get_user_by_email
 from app.db import schemas
+from app.db.models import User, UserRole
 from app.dependencies import get_db, verify_password
 
 
@@ -44,7 +45,7 @@ def create_access_token(
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
     db: Annotated[Session, Depends(get_db)]    
-):
+) -> schemas.User:
     credentials_exception = HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Invalid authentication credentials',
@@ -60,6 +61,14 @@ async def get_current_user(
         raise credentials_exception
     user = get_user_by_email(db, token_data.email)
     if user is None:
-        raise create_access_token
-    return user
-  
+        raise credentials_exception
+    return schemas.User.model_validate(user, from_attributes=True)
+
+
+async def get_admin(
+    current_user: Annotated[User, Depends(get_current_user)]
+) -> schemas.User:
+    if current_user.role == UserRole.admin:
+        return current_user
+    else:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
