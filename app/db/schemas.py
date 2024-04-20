@@ -67,6 +67,11 @@ class PostUpdate(BaseModel):
 
 class CommentDTO(BaseModel):
     text: str
+    author_id: int
+
+
+class CommentUpdate(BaseModel):
+    text: str
 
 
 class CommentGet(CommentDTO):
@@ -77,3 +82,12 @@ class CommentGet(CommentDTO):
 
     class ConfigDict:
         from_attributes = True
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+class TokenData(BaseModel):
+    email: Optional[str] = None

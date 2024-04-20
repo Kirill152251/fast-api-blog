@@ -5,9 +5,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 from app.db.models import User, Base
-from app.main import app
+from main import app
 from app.db import crud_post, crud_group, schemas, models
-from app.dependencies import get_db
+from app.dependencies import get_db, get_hashed_password
 
 
 SQLALCHEMY_DATABASE_URL = "sqlite://"
@@ -17,6 +17,8 @@ engine = create_engine(
         poolclass=StaticPool,
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+PASSWORD = 'fakepassword'
+HASHED_PASSWORD = get_hashed_password(PASSWORD)
 
 
 def override_get_db():
@@ -48,15 +50,22 @@ def user_create_dict():
         "email": "email@mail.com",
         "first_name": "kirill",
         "last_name": "ermalenok",
-        "password": "password",
+        "password": PASSWORD,
         "role": "admin"
+    }
+
+@pytest.fixture
+def current_user(user_create_dict):
+    return{
+        'username': user_create_dict['email'],
+        'password': user_create_dict['password']
     }
 
 @pytest.fixture
 def db_user_create_dict(user_create_dict):
     db_create_dict = user_create_dict.copy()
     db_create_dict.pop('password')
-    db_create_dict['hashed_password'] = 'passwordfake'
+    db_create_dict['hashed_password'] = HASHED_PASSWORD
     return db_create_dict
 
 @pytest.fixture
