@@ -46,3 +46,4 @@ def to_dict(group: Group):
     return schemas.GroupGet.model_validate(
         group, from_attributes=True
     ).model_dump()
+
