@@ -1,8 +1,9 @@
+from typing import Any
 from sqlalchemy import String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 
 from app.db import constants
-from app.db.models import Base
+from app.db.models.base import Base
 
 
 class Category(Base):
@@ -20,12 +21,14 @@ class Category(Base):
     )
     description: Mapped[str | None]
 
+    posts: Mapped[list['Post']] = relationship('Post', back_populates='category')
+
 
     @classmethod
     def find(cls, session: Session, where_conditions: list[Any]):
-        _stmt = select(cls).where(*where_conditions)
-        _result = session.execute(_stmt)
-        return _result.scalars().first()
+        stmt = select(cls).where(*where_conditions)
+        result = session.execute(stmt)
+        return result.scalars().first()
     
 
     def __repr__(self):
