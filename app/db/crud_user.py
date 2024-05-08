@@ -2,8 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import update, insert, select
 
 from app.db import schemas
-from app.db.models import User
-from app.dependencies import get_hashed_password
+from app.db.models.user import User
 
 
 def create_user(db: Session, user: schemas.UserCreate) -> User:
