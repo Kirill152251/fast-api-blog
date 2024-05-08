@@ -3,11 +3,12 @@ from datetime import datetime
 
 from pydantic import BaseModel
 
-from app.db.models import UserRole
+from app.db.models.user import UserRole
 
 
 class UserBase(BaseModel):
     email: str
+    nickname: str
     first_name: str | None
     last_name: str | None
     role: UserRole = UserRole.user
@@ -19,13 +20,13 @@ class UserBase(BaseModel):
 class User(UserBase):
     id: int
     is_active: bool
-    # comments: list[Comment] = []
 
     class ConfigDict:
         from_atributes = True
 
 
 class UserUpdate(BaseModel):
+    nickname: Optional[str] = None
     email: Optional[str] = None
     first_name: Optional[str] = None
     last_name: Optional[str] = None
@@ -90,4 +91,4 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    email: Optional[str] = None
+    nickname: Optional[str] = None
