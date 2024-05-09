@@ -14,11 +14,11 @@ class Comment(Base):
     text: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         nullable=False,
-        server_default=sqltext('CURRENT_TIMESTAMP')
+        server_default=sqltext("TIMEZONE('utc', now())")
     )
     author_id: Mapped[int] = mapped_column(
         ForeignKey('users.id', name='comment_author'),
-        nullable=False,
+        nullable=False
     )
     post_id: Mapped[int] = mapped_column(
         ForeignKey('posts.id', name='related_post'),

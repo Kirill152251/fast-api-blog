@@ -15,11 +15,10 @@ from app.dependencies import get_db
 from app.auth import get_current_user, get_admin
 
 
-SQLALCHEMY_DATABASE_URL = "sqlite://"
+SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:cooldb@localhost:5432/test_blog'
 engine = create_engine(
         SQLALCHEMY_DATABASE_URL,
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
+        poolclass=StaticPool
 )
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 PASSWORD = 'secret_key'

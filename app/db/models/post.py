@@ -15,8 +15,7 @@ class Post(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     text: Mapped[str] = mapped_column(nullable=False)
     pub_date: Mapped[datetime] = mapped_column(
-        nullable=False,
-        server_default=sqltext('CURRENT_TIMESTAMP')
+        server_default=sqltext("TIMEZONE('utc', now())")
     )
     author_id: Mapped[int] = mapped_column(
         ForeignKey('users.id'),
