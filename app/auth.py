@@ -62,5 +62,5 @@ async def get_admin(
     if current_user.role == UserRole.admin:
         return current_user
     else:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
 

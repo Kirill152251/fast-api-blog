@@ -1,23 +1,20 @@
+from random import randint
+
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, delete
+from sqlalchemy import create_engine 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-from sqlalchemy.sql.functions import user
 
 from app.db.models.base import Base
 from app.db.models.user import User
-from main import app
-from app.db import schemas, models
+from app.db import schemas
 from app.dependencies import get_db 
+from main import app
 
 
-SQLALCHEMY_DATABASE_URL = "sqlite://"
-engine = create_engine(
-        SQLALCHEMY_DATABASE_URL,
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-)
+SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:cooldb@localhost:5432/test_blog'
+engine = create_engine(SQLALCHEMY_DATABASE_URL, poolclass=StaticPool)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 PASSWORD = 'secret_key'
 
@@ -48,27 +45,10 @@ def db():
 
 
 @pytest.fixture
-def clear_db(db):
-    db.execute(delete(User))
-
-
-@pytest.fixture(scope='module')
-def admin_schema():
+def rnd_user_create_schema():
     return schemas.UserCreate(
-        nickname='Jackpot',
-        email='email@mail.com',
-        first_name='Kirill',
-        last_name='Ermalenok',
-        password=PASSWORD,
-        role='admin'
-    )
-
-
-@pytest.fixture(scope='module')
-def user_schema():
-    return schemas.UserCreate(
-        nickname='Jackpot1',
-        email='email1@mail.com',
+        nickname=f'Jackpot{str(randint(0, 100000))}',
+        email=f'email{str(randint(0, 100000))}@mail.com',
         first_name='Kirill',
         last_name='Ermalenok',
         password=PASSWORD,
@@ -77,25 +57,17 @@ def user_schema():
 
 
 @pytest.fixture(scope='module')
-def save_admin(admin_schema, db):
-    user = User(**admin_schema.model_dump())
-    user.save(db)
-    return user
-
-
-@pytest.fixture(scope='module')
-def save_user(user_schema, db):
+def auth_user_headers(client, db):
+    user_schema = schemas.UserCreate(
+        nickname='Jackpot',
+        email='email@mail.com',
+        first_name='Kirill',
+        last_name='Ermalenok',
+        password=PASSWORD,
+        role='user'
+    )
     user = User(**user_schema.model_dump())
     user.save(db)
-    return user
-
-
-@pytest.fixture(scope='module')
-def auth_user_headers(
-    client: TestClient,
-    user_schema: schemas.UserCreate,
-    save_user: User
-):
     data = {'username': user_schema.nickname, 'password': user_schema.password }
     response = client.post('/token', data=data)
     token = response.json()['access_token']
@@ -103,12 +75,18 @@ def auth_user_headers(
 
 
 @pytest.fixture(scope='module')
-def auth_admin_headers(
-    client: TestClient,
-    admin_schema: schemas.UserCreate,
-    save_admin: User
-):
-    data = {'username': admin_schema.nickname, 'password': admin_schema.password }
+def auth_admin_headers(client, db):
+    user_schema = schemas.UserCreate(
+        nickname='Jackpot1',
+        email='email1@mail.com',
+        first_name='Kirill',
+        last_name='Ermalenok',
+        password=PASSWORD,
+        role='admin'
+    )
+    user = User(**user_schema.model_dump())
+    user.save(db)
+    data = {'username': user_schema.nickname, 'password': user_schema.password }
     response = client.post('/token', data=data)
     token = response.json()['access_token']
     return {"Authorization": f"Bearer {token}"}

@@ -1,25 +1,21 @@
-from fastapi import Depends
 import pytest
 from fastapi.testclient import TestClient
+from fastapi import Depends
 from sqlalchemy import create_engine, delete
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
-from sqlalchemy.sql.functions import user
 
 from app.db.models.base import Base
 from app.db.models.user import User
 from main import app
-from app.db import schemas, models
+from app.db import schemas
 from app.dependencies import get_db
 from app.auth import get_current_user, get_admin
 
 
 SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:cooldb@localhost:5432/test_blog'
-engine = create_engine(
-        SQLALCHEMY_DATABASE_URL,
-        poolclass=StaticPool
-)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, poolclass=StaticPool)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 PASSWORD = 'secret_key'
 

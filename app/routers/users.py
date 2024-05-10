@@ -13,7 +13,7 @@ from app.auth import get_current_user, get_admin
 router = APIRouter(tags=['users'])
 
 
-@router.get('/users/me/', response_model=schemas.User)
+@router.get('/users/me', response_model=schemas.User)
 async def read_users_me(
     current_user: Annotated[User, Depends(get_current_user)]
 ):
@@ -21,7 +21,7 @@ async def read_users_me(
     return current_user
 
 
-@router.put('/users/me/', response_model=schemas.User)
+@router.put('/users/me', response_model=schemas.User)
 async def update_user_me(
     updated_data: schemas.UserUpdate,
     current_user: Annotated[User, Depends(get_current_user)],
@@ -33,7 +33,7 @@ async def update_user_me(
 
 
 @router.post(
-    '/users/',
+    '/users',
     response_model=schemas.User,
     status_code=status.HTTP_201_CREATED,
     dependencies=[Depends(get_admin)]
@@ -49,19 +49,17 @@ def create_user(
 
 
 @router.get(
-    '/users/',
+    '/users',
     response_model = List[schemas.User],
     dependencies=[Depends(get_admin)]
 )
-def get_users(
-    session: Session = Depends(get_db),
-):
+def get_users(session: Session = Depends(get_db)):
     """Get all users, ordered by id. Access rights: admin."""
     return User.find_all(session)
 
 
 @router.get(
-    '/users/{user_id}/',
+    '/users/{user_id}',
     response_model=schemas.User,
     dependencies=[Depends(get_admin)]
 )
@@ -77,7 +75,7 @@ def get_user(user_id: int, session: Session = Depends(get_db)):
     
 
 @router.delete(
-    '/users/{user_id}/',
+    '/users/{user_id}',
     response_model=schemas.Message,
     dependencies=[Depends(get_admin)]
 )
@@ -94,7 +92,7 @@ def delete_user(user_id: int, session: Session = Depends(get_db)):
 
 
 @router.put(
-    'users/{user_id}/',
+    '/users/{user_id}',
     response_model=schemas.User,
     dependencies=[Depends(get_admin)]
 )
