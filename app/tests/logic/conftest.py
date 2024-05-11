@@ -11,7 +11,6 @@ from app.db.models.user import User
 from main import app
 from app.db import schemas
 from app.dependencies import get_db
-from app.auth import get_current_user, get_admin
 
 
 SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:cooldb@localhost:5432/test_blog'
@@ -21,7 +20,7 @@ PASSWORD = 'secret_key'
 
 auth_admin = schemas.UserCreate(
     nickname='fsdfa',
-    email='admin@mail.com',
+    email='admin19571@mail.com',
     first_name='faf',
     last_name='jkja',
     password=PASSWORD,
@@ -30,7 +29,7 @@ auth_admin = schemas.UserCreate(
 
 auth_user = schemas.UserCreate(
     nickname='fallfsdfa',
-    email='user@mail.com',
+    email='user616840@mail.com',
     first_name='faf',
     last_name='jkja',
     password=PASSWORD,
@@ -46,20 +45,22 @@ def override_get_db():
 
 
 def override_get_admin(db: Session = Depends(get_db)):
-    user = User(**auth_admin.model_dump())
-    user.save(db)
+    user = User.find(db, [User.email==auth_admin.email])
+    if not user:
+        user = User(**auth_admin.model_dump())
+        user.save(db)
     return user
 
 
 def override_get_current_user(db: Session = Depends(get_db)):
-    user = User(**auth_user.model_dump())
-    user.save(db)
+    user = User.find(db, [User.email==auth_user.email])
+    if not user:
+        user = User(**auth_user.model_dump())
+        user.save(db)
     return user
 
 
 app.dependency_overrides[get_db] = override_get_db
-app.dependency_overrides[get_admin] = override_get_admin
-app.dependency_overrides[get_current_user] = override_get_current_user
 user_client = TestClient(app)
 
 

@@ -5,9 +5,11 @@ from sqlalchemy.orm import Session
 
 from app.db.models.user import User 
 from app.db import schemas
-from app.tests.logic.conftest import auth_user 
+from app.tests.utils import override_get_current_user_get_admin_dep
+from app.tests.logic.conftest import auth_user
 
 
+@override_get_current_user_get_admin_dep
 def test_create_user_with_valid_data(
     user_schema: schemas.UserCreate,
     client: TestClient 
@@ -26,6 +28,7 @@ def test_create_user_with_valid_data(
     assert 'id' in data
 
 
+@override_get_current_user_get_admin_dep
 def test_user_me_get(client: TestClient):
     response = client.get(
         '/users/me'
@@ -39,6 +42,7 @@ def test_user_me_get(client: TestClient):
     assert data['role'] == auth_user.role
 
 
+@override_get_current_user_get_admin_dep
 def test_user_me_put(client: TestClient):
     new_data = schemas.UserUpdate(
         nickname='new_nick_name',
@@ -58,6 +62,7 @@ def test_user_me_put(client: TestClient):
     assert data['last_name'] == new_data.last_name
 
 
+@override_get_current_user_get_admin_dep
 def test_user_me_put_only_one_field(client: TestClient):
     new_data = schemas.UserUpdate(
         nickname='new_nick_name',
@@ -71,6 +76,7 @@ def test_user_me_put_only_one_field(client: TestClient):
     assert data['nickname'] == new_data.nickname 
 
 
+@override_get_current_user_get_admin_dep
 @pytest.mark.usefixtures('save_user')
 @pytest.mark.usefixtures('save_admin')
 def test_users_get(client: TestClient):
@@ -80,12 +86,14 @@ def test_users_get(client: TestClient):
     assert len(data) == 3 # two with fixtures and one with overrided get_admin dep
 
 
+@override_get_current_user_get_admin_dep
 def test_user_get(client: TestClient, save_user: User):
     response = client.get(f'/users/{save_user.id}')
     assert response.status_code == status.HTTP_200_OK
     assert response.json()['nickname'] == save_user.nickname
 
 
+@override_get_current_user_get_admin_dep
 def test_delete_user(client: TestClient, save_user: User, db):
     response = client.delete(f'/users/{save_user.id}')
     assert response.status_code == status.HTTP_200_OK
@@ -93,6 +101,7 @@ def test_delete_user(client: TestClient, save_user: User, db):
     assert user == None
 
 
+@override_get_current_user_get_admin_dep
 def test_users_put(client: TestClient, save_user: User):
     new_data = schemas.UserUpdate(
         nickname='new_nick_name',
@@ -112,6 +121,7 @@ def test_users_put(client: TestClient, save_user: User):
     assert data['last_name'] == new_data.last_name
 
 
+@override_get_current_user_get_admin_dep
 def test_user_put_only_one_field(client: TestClient, save_user: User):
     new_data = schemas.UserUpdate(
         nickname='new_nick_name',
