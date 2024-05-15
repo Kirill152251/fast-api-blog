@@ -1,5 +1,5 @@
 from typing import Any
-from sqlalchemy import String
+from sqlalchemy import String, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship, Session
 
 from app.db import constants
@@ -33,4 +33,3 @@ class Category(Base):
 
     def __repr__(self):
         return f'Category(id={self.id}, slug={self.slug})'
-

@@ -2,7 +2,7 @@ import enum
 from typing import Any
 
 from passlib.context import CryptContext
-from sqlalchemy import Boolean, Enum, Integer, String, select
+from sqlalchemy import Boolean, Enum, String, select
 from sqlalchemy.orm import Mapped, Session, mapped_column, relationship
 
 from app.db.models.base import Base
@@ -63,4 +63,3 @@ class User(Base):
 
     def __repr__(self):
         return f'User(id={self.id}, email={self.nickname})'
-

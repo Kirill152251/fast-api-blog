@@ -1,11 +1,10 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import ForeignKey, String
+from sqlalchemy import ForeignKey, select
 from sqlalchemy import text as sqltext
 from sqlalchemy.orm import Mapped, mapped_column, relationship, joinedload, Session
 
-from app.db import constants
 from app.db.models.base import Base
 
 
@@ -44,4 +43,3 @@ class Post(Base):
 
     def __repr__(self):
         return f'Post(id={self.id}, text={self.text[:10]})'
-

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Any
 
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, select
 from sqlalchemy import text as sqltext
 from sqlalchemy.orm import Mapped, joinedload, mapped_column, Session, relationship
 from app.db.models.base import Base
@@ -42,4 +42,3 @@ class Comment(Base):
 
     def __repr__(self):
         return f'Comment(id={self.id}, text={self.text[:10]})'
-

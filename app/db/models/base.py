@@ -1,7 +1,5 @@
-from typing import Any
-
 from fastapi import HTTPException, status
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from sqlalchemy.exc import SQLAlchemyError 
 from sqlalchemy.orm import DeclarativeBase, Session
 
 
@@ -41,4 +39,3 @@ class Base(DeclarativeBase):
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail=repr(error)
             ) from error
-
