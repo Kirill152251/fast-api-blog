@@ -6,7 +6,6 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWSError, jwt
 
-from app.db.crud_user import get_user_by_email
 from app.db import schemas
 from app.db.models.user import User, UserRole
 from app.dependencies import get_db

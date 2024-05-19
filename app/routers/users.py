@@ -3,9 +3,8 @@ from typing import Annotated, List
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 
-from app.db import crud_user, schemas, models
+from app.db import schemas, models
 from app.db.models.user import User
-from app.db.utils import is_exist
 from app.dependencies import get_db
 from app.auth import get_current_user, get_admin
 
