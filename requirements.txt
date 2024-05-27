@@ -25,6 +25,7 @@ psycopg2-binary==2.9.9
 pyasn1==0.5.1
 pycparser==2.21
 pydantic==2.5.2
+pydantic-settings==2.2.1
 pydantic_core==2.14.5
 pytest==8.0.2
 pytest-lazy-fixtures==1.0.7

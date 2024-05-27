@@ -47,6 +47,20 @@ def create_user(
     return user 
 
 
+@router.post(
+    '/users_test',
+    response_model=schemas.User,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_user_test(
+    payload: schemas.UserCreate,
+    session: Session = Depends(get_db)
+):
+    user: User = User(**payload.model_dump())
+    user.save(session)
+    return user 
+
+
 @router.get(
     '/users',
     response_model = List[schemas.User],

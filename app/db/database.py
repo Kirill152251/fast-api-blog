@@ -1,8 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
+from app.config import settings
 
-SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:cooldb@localhost:5432/blog'
+DATABASE_URL = str(settings.DATABASE_URL)
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+

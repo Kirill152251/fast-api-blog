@@ -6,14 +6,15 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWSError, jwt
 
+from app.config import settings
 from app.db import schemas
 from app.db.models.user import User, UserRole
 from app.dependencies import get_db
 
 
-SECRET_KEY = '6004f8e57a152aafba726a7618779d4f7a69dfd0ec68456f41e92cbf1da537f7'
-ALGORITHM = 'HS256'
-TOKEN_EXPIRE_MIN = 30
+SECRET_KEY = str(settings.JWT_SECRET)
+ALGORITHM = str(settings.JWT_ALG)
+TOKEN_EXPIRE_MIN = int(settings.JWT_EXP_MIN) 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
@@ -49,7 +50,7 @@ async def get_current_user(
         token_data = schemas.TokenData(nickname=nickname)
     except JWSError:
         raise credentials_exception
-    user: User = User.find(session, [User.nickname == nickname]) 
+    user: User = User.find(session, [User.nickname == token_data.nickname]) 
     if user is None:
         raise credentials_exception
     return user
